@@ -6,7 +6,7 @@ export const generateUser = () => ({
 
 export const existingUser = {
   name: 'Existing User',
-  email: 'di@gmail.com',
+  email: 'di12@gmail.com',
   password: '123456',
 };
 
