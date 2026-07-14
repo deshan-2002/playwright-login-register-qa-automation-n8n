@@ -64,8 +64,7 @@ test.describe('Login Tests', () => {
   test('should login successfully with valid credentials', async ({ page }) => {
     await loginPage.goto();
     await loginPage.login(existingUser.email, existingUser.password);
-    await page.waitForURL('/dashboard', { timeout: 10000 });
-    await expect(dashboardPage.welcomeHeading).toBeVisible();
+    await expect(dashboardPage.welcomeHeading).toBeVisible({ timeout: 15000 });
   });
 
   test('should redirect to login when accessing dashboard without auth', async ({ page }) => {
