@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .input-field {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all duration-200 bg-white text-sm;
+  }
+  .btn-primary {
+    @apply w-full py-3 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-outline {
+    @apply py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 text-sm font-medium;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100;
+  }
+  .card-hover {
+    @apply card hover:shadow-xl hover:shadow-gray-200/60 hover:-translate-y-0.5 transition-all duration-300;
+  }
+  .card-glass {
+    @apply backdrop-blur-xl bg-white/70 rounded-2xl shadow-lg shadow-gray-200/30 border border-white/60;
+  }
+  .stat-card {
+    @apply relative overflow-hidden rounded-2xl p-6 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl;
+  }
+  .stat-card::before {
+    @apply content-[''] absolute inset-0 opacity-0 transition-opacity duration-500;
+  }
+  .stat-card:hover::before {
+    @apply opacity-100;
+  }
+  .gradient-border {
+    @apply relative;
+  }
+  .gradient-border::after {
+    @apply content-[''] absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-r from-indigo-500 to-purple-500 [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [-webkit-mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [-webkit-mask-composite:xor] mask-composite:exclude pointer-events-none;
+  }
+  .btn-ghost {
+    @apply py-2 px-4 text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-xl transition-all duration-200 text-sm font-medium;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600;
+  }
+  .text-shimmer {
+    @apply bg-[length:200%_100%] bg-clip-text text-transparent animate-shimmer;
+  }
+}
