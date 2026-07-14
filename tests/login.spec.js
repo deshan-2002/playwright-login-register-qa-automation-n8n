@@ -3,15 +3,9 @@ import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { existingUser } from './fixtures/test-data';
 
-const API = 'http://localhost:5000/api/auth';
-
 test.describe('Login Tests', () => {
   let loginPage;
   let dashboardPage;
-
-  test.beforeAll(async ({ request }) => {
-    await request.post(`${API}/register`, { data: existingUser }).catch(() => {});
-  });
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
