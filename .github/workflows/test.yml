@@ -72,16 +72,15 @@ jobs:
         run: npm run build
         working-directory: frontend
 
-      - name: Start frontend preview
-        run: |
-          npx vite preview --port 5173 &
-          sleep 3
-          curl --retry 10 --retry-delay 2 --retry-connrefused http://localhost:5173
-        working-directory: frontend
-
       - name: Install Playwright browsers
         run: npx playwright install chromium
         working-directory: tests
+
+      - name: Start frontend preview
+        run: |
+          npx vite preview --port 5173 --host 0.0.0.0 &
+          npx wait-on http://localhost:5173 --timeout 30000
+        working-directory: frontend
 
       - name: Run Playwright tests
         run: npx playwright test login.spec.js
