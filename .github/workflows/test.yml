@@ -22,7 +22,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Cache backend dependencies
         uses: actions/cache@v4
@@ -83,7 +83,7 @@ jobs:
         working-directory: frontend
 
       - name: Run Playwright tests
-        run: npx playwright test login.spec.js
+        run: npx playwright test
         working-directory: tests
 
       - name: Upload Playwright report

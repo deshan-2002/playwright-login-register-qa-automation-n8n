@@ -4,11 +4,7 @@ export const generateUser = () => ({
   password: 'Password123!',
 });
 
-export const existingUser = {
-  name: 'Existing User',
-  email: 'dinod@gmail.com',
-  password: '12345678',
-};
+export const wrongPassword = 'WrongPassword123';
 
 export const invalidEmails = [
   'notanemail',

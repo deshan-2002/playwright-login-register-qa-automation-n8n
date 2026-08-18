@@ -1,16 +1,22 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
-import { existingUser } from './fixtures/test-data';
+import { generateUser, wrongPassword } from './fixtures/test-data';
 
-const API = 'http://localhost:5000/api/auth';
+const API = process.env.API_URL || 'http://localhost:5000/api/auth';
 
 test.describe('Login Tests', () => {
   let loginPage;
   let dashboardPage;
+  let user;
 
   test.beforeAll(async ({ request }) => {
-    await request.post(`${API}/register`, { data: existingUser }).catch(() => {});
+    user = generateUser();
+
+    const response = await request.post(`${API}/register`, { data: user });
+    const responseBody = await response.text();
+
+    expect(response.status(), `Failed to register test user.\nResponse: ${responseBody}`).toBe(201);
   });
 
   test.beforeEach(async ({ page }) => {
@@ -28,43 +34,78 @@ test.describe('Login Tests', () => {
     await expect(page.getByText('Welcome Back')).toBeVisible();
   });
 
+  test('should login successfully with valid credentials', async ({ page }) => {
+    await loginPage.goto();
+    await loginPage.login(user.email, user.password);
+
+    await expect(page).toHaveURL(/\/dashboard/);
+    await expect(dashboardPage.welcomeHeading).toBeVisible();
+    await expect(dashboardPage.accountEmail).toContainText(user.email);
+  });
+
+  test('should show error for valid email with wrong password', async ({ page }) => {
+    await loginPage.goto();
+    await loginPage.login(user.email, wrongPassword);
+
+    await expect(loginPage.errorMessage).toBeVisible();
+    await expect(page).toHaveURL(/\/login/);
+    await expect(dashboardPage.welcomeHeading).not.toBeVisible();
+  });
+
+  test('should show error for wrong email with valid password', async ({ page }) => {
+    await loginPage.goto();
+    await loginPage.login(`wrong_${user.email}`, user.password);
+
+    await expect(loginPage.errorMessage).toBeVisible();
+    await expect(page).toHaveURL(/\/login/);
+    await expect(dashboardPage.welcomeHeading).not.toBeVisible();
+  });
+
+  test('should show error for wrong email and wrong password', async ({ page }) => {
+    await loginPage.goto();
+    await loginPage.login('wronguser@example.com', wrongPassword);
+
+    await expect(loginPage.errorMessage).toBeVisible();
+    await expect(page).toHaveURL(/\/login/);
+    await expect(dashboardPage.welcomeHeading).not.toBeVisible();
+  });
+
+  test('should show validation error for empty email', async ({ page }) => {
+    await loginPage.goto();
+    await loginPage.fillPassword(user.password);
+    await loginPage.submit();
+
+    await expect(loginPage.emailError).toBeVisible();
+    await expect(page).toHaveURL(/\/login/);
+  });
+
+  test('should show validation error for empty password', async ({ page }) => {
+    await loginPage.goto();
+    await loginPage.fillEmail(user.email);
+    await loginPage.submit();
+
+    await expect(loginPage.passwordError).toBeVisible();
+    await expect(page).toHaveURL(/\/login/);
+  });
+
   test('should show validation errors when submitting empty form', async ({ page }) => {
     await loginPage.goto();
     await loginPage.submit();
-    await expect(loginPage.validationError).toHaveCount(2);
+
+    await expect(loginPage.emailError).toBeVisible();
+    await expect(loginPage.passwordError).toBeVisible();
+    await expect(page).toHaveURL(/\/login/);
   });
 
   test('should show validation error for invalid email format', async ({ page }) => {
     await loginPage.goto();
     await loginPage.fillEmail('not-an-email');
-    await loginPage.fillPassword(existingUser.password);
+    await loginPage.fillPassword(user.password);
     await loginPage.submit();
-    await expect(loginPage.validationError.first()).toBeVisible();
-  });
 
-  test('should show validation error for empty password', async ({ page }) => {
-    await loginPage.goto();
-    await loginPage.fillEmail(existingUser.email);
-    await loginPage.submit();
-    await expect(loginPage.validationError).toHaveCount(1);
-  });
-
-  test('should show error for incorrect email', async ({ page }) => {
-    await loginPage.goto();
-    await loginPage.login('wrong@email.com', existingUser.password);
-    await expect(loginPage.errorMessage).toBeVisible({ timeout: 10000 });
-  });
-
-  test('should show error for incorrect password', async ({ page }) => {
-    await loginPage.goto();
-    await loginPage.login(existingUser.email, 'WrongPassword1');
-    await expect(loginPage.errorMessage).toBeVisible({ timeout: 10000 });
-  });
-
-  test('should login successfully with valid credentials', async ({ page }) => {
-    await loginPage.goto();
-    await loginPage.login(existingUser.email, existingUser.password);
-    await expect(dashboardPage.welcomeHeading).toBeVisible({ timeout: 15000 });
+    await expect(loginPage.invalidEmailError).toBeVisible();
+    await expect(page).toHaveURL(/\/login/);
+    await expect(dashboardPage.welcomeHeading).not.toBeVisible();
   });
 
   test('should redirect to login when accessing dashboard without auth', async ({ page }) => {
