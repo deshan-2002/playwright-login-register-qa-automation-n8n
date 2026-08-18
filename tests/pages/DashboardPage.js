@@ -1,7 +1,7 @@
 export class DashboardPage {
   constructor(page) {
     this.page = page;
-    this.welcomeHeading = page.locator('h1:has-text("Welcome back")');
+    this.welcomeHeading = page.locator('h1:has-text("Welcome back,")');
     this.accountEmail = page.locator('span.truncate.ml-4');
     this.statsCards = page.locator('.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4 > div');
     this.revenueChart = page.locator('text=Weekly Revenue');
