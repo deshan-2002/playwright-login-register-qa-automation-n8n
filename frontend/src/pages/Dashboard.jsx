@@ -87,7 +87,7 @@ export default function Dashboard() {
             </div>
             <div>
               <h1 className="text-2xl lg:text-3xl font-bold text-white">
-                Welcome back1, {user?.name?.split(' ')[0] || 'User'}!
+                Welcome back, {user?.name?.split(' ')[0] || 'User'}!
               </h1>
               <p className="text-white/70 mt-1 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse" />
