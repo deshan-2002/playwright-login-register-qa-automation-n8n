@@ -102,7 +102,7 @@ export default function Dashboard() {
             </button>
             <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-indigo-700 text-sm font-semibold hover:bg-white/90 transition-all shadow-lg shadow-black/10">
               <FiDownload className="w-4 h-4" />
-              Download Report.
+              Download Report
             </button>
           </div>
         </div>
